@@ -1,17 +1,48 @@
-import {Form,Button} from 'react-bootstrap';
+import React, { useState } from "react";
+import { EditText } from 'react-edit-text';
+import api from '../../api/axiosConfig';
 
-const noteForm = ({handleSubmit,revText,labelText,defaultValue}) => {
+const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
+    const [text, setText] = useState(defaultText);
+    const [title, setTitle] = useState(defaultTitle);
+    const [id, setId] = useState(defaultId);
+
+  const handleTextChange = val => {
+    setText(val.value);
+  };
+
+  const handleTitleChange = val => {
+    setTitle(val.value);
+  }
+
+  const handleSubmit = (event, updatedText, updatedTitle) => {
+    event.preventDefault();
+    api
+      .post("/tasks/update", { "tasks": updatedText, "name": updatedTitle, "id": id })
+      .then((response) => {
+        console.log("Success:", response);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  
+
   return (
-
-    <Form>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-            <Form.Label>{labelText}</Form.Label>
-            <Form.Control ref={revText} as="textarea" rows={3} defaultValue={defaultValue} />
-        </Form.Group>
-        <Button variant="outline-info" onClick={handleSubmit}>Submit</Button>
-    </Form>   
-
-  )
+  <form onSubmit={(event) => handleSubmit(event, text, title)}>
+      <h2>
+        <EditText
+          defaultValue={title}
+          onSave={handleTitleChange}
+        />
+      </h2>
+      <EditText
+        defaultValue={text}
+        onSave={handleTextChange}
+      />
+      <button type="submit">Enviar a API</button>
+    </form>
+  );
 }
 
-export default noteForm
+export default noteForm;

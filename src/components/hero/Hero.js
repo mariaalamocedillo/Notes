@@ -1,24 +1,21 @@
-import React from "react";
 import './Hero.scss';
-import { EditText, EditTextarea } from 'react-edit-text';
+import React, { useState } from "react";
+import { EditText } from 'react-edit-text';
 import 'react-edit-text/dist/index.css';
-import noteForm from "../noteForm/noteForm";
+import NoteForm from "../noteForm/noteForm";
 
 
-const Hero = ({listsTasks}) => {
+const Hero = ({listNotes}) => {
     return(
         <div className="container">
             <div className="cards-container">
                 {
-                    listsTasks.map((list) =>{
+                    listNotes.map((note) =>{
                         return(
-                                <div className="card" key={list.name}>
-                                    <h2>{list.name}</h2>
+                                <div className="card" key={note.name}>
                                     
-                                    <EditText defaultValue={list.tasks} className="editabletxt" />
-                                    <noteForm handleSubmit={addReview} revText={revText} labelText = "Write a Review?" />  
-
-                                    <span className="author">~{list.author}</span>
+                                    <NoteForm defaultText={note.tasks} defaultTitle={note.name} defaultId={note.id} className="editabletxt" />
+                                    <span className="author">~{note.author}</span>
                                 </div>
                         )
                     })

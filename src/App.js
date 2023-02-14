@@ -15,7 +15,7 @@ function App() {
     setIsLoading(true);
     try {
       const response = await api.get("/tasks");
-      console.log(response.data)
+      console.log(response.data[0])
       setTasks(response.data);
     } catch (err) {
       setError(err.message);
@@ -35,7 +35,7 @@ function App() {
       {!isLoading && !error && (
         <Routes>
           <Route path={"/"} element={<Layout />}>
-            <Route path={"/"} element={<Home tasks={tasks}/>} />
+            <Route path={"/"} element={<Home notes={tasks}/>} />
           </Route>
         </Routes>
       )}
