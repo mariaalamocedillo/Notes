@@ -41,9 +41,9 @@ const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
   };
 
   const handleDelete = (event) => {
-    event.preventDefault();
+    //event.preventDefault();
     api
-    .delete(`/delete/${id}`)
+    .post(`/notes/delete`, {"id" : id})
     .then((response) => {
       console.log("Successful delete:", response);
       alert("BIEEEEN");
@@ -52,15 +52,8 @@ const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
       console.error("Error:", error);
       alert("MAAAAAL " + api.getUri() + "/notes/delete/" + id);
     });
-
-   /*
-    api
-    .delete(`/notes/delete/${id}`)
-    .then(() => {
-      alert("Post deleted!");
-      setPost(null)
-    });
-    */ 
+    fetch(api.getUri() + "/notes/delete/" + id, { method: 'DELETE' })
+        .then(() =>  alert("BIEEEEN"));
   };
   
 

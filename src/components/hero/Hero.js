@@ -1,5 +1,5 @@
-import './Hero.scss';
 import React from "react";
+import './Hero.scss';
 import 'react-edit-text/dist/index.css';
 import NoteForm from "../noteForm/NoteForm";
 
