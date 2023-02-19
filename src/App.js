@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import api from './api/axiosConfig';
 import { useState, useEffect } from 'react';
 import Layout from './components/Layout';
@@ -14,7 +14,7 @@ function App() {
   const getTasks = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get("/tasks");
+      const response = await api.get("/notes");
       console.log(response.data[0])
       setTasks(response.data);
     } catch (err) {

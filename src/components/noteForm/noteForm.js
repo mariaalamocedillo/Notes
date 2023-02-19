@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { EditText } from 'react-edit-text';
 import api from '../../api/axiosConfig';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
     const [text, setText] = useState(defaultText);
@@ -17,30 +19,68 @@ const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
 
   const handleSubmit = (event, updatedText, updatedTitle) => {
     event.preventDefault();
-    api
-      .post("/tasks/update", { "tasks": updatedText, "name": updatedTitle, "id": id })
+    if (id == null || id == undefined){ //sin id = nueva nota
+      api
+      .post("/notes/create", { "tasks": updatedText, "name": updatedTitle, "author": "debesponerusuario", "created" : new Date()})
+        .then((response) => {
+          console.log("Successful create:", response);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {  //actualiza nota
+      api
+      .post("/notes/update", { "tasks": updatedText, "name": updatedTitle, "id": id, "lastModified" : new Date()})
       .then((response) => {
-        console.log("Success:", response);
+        console.log("Successful update:", response);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+    }
+  };
+
+  const handleDelete = (event) => {
+    event.preventDefault();
+    api
+    .delete(`/delete/${id}`)
+    .then((response) => {
+      console.log("Successful delete:", response);
+      alert("BIEEEEN");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("MAAAAAL " + api.getUri() + "/notes/delete/" + id);
+    });
+
+   /*
+    api
+    .delete(`/notes/delete/${id}`)
+    .then(() => {
+      alert("Post deleted!");
+      setPost(null)
+    });
+    */ 
   };
   
 
   return (
   <form onSubmit={(event) => handleSubmit(event, text, title)}>
+      {id ? <button className="deleteButton" onClick={handleDelete}><FontAwesomeIcon className="deleteIcon" icon={faTrashCan} /></button> : ''}
       <h2>
         <EditText
           defaultValue={title}
           onSave={handleTitleChange}
         />
       </h2>
-      <EditText
-        defaultValue={text}
-        onSave={handleTextChange}
-      />
-      <button type="submit">Enviar a API</button>
+      <div className="noteContent">
+        <EditText
+          multiline={true}
+          defaultValue={text}
+          onSave={handleTextChange}
+        />
+      </div>
+      <button className="sendButton" type="submit">{id ? 'Guardar' : 'Crear'}</button>
     </form>
   );
 }
