@@ -3,6 +3,8 @@ import api from './api/axiosConfig';
 import { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 import Home from './components/home/Home';
+import LoginForm from './components/login/Login';
+import RegisterForm from './components/login/Register';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -15,7 +17,6 @@ function App() {
     setIsLoading(true);
     try {
       const response = await api.get("/notes");
-      console.log(response.data[0])
       setTasks(response.data);
     } catch (err) {
       setError(err.message);
@@ -36,6 +37,8 @@ function App() {
         <Routes>
           <Route path={"/"} element={<Layout />}>
             <Route path={"/"} element={<Home notes={tasks}/>} />
+            <Route path={"/register"} element={<RegisterForm/>} />
+            <Route path={"/login"} element={<LoginForm/>} />
           </Route>
         </Routes>
       )}

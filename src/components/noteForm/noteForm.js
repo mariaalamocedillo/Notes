@@ -4,10 +4,11 @@ import api from '../../api/axiosConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
-const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
+const noteForm = ({ defaultText, defaultTitle, defaultId, usernameAuthor }) => {
     const [text, setText] = useState(defaultText);
     const [title, setTitle] = useState(defaultTitle);
     const [id, setId] = useState(defaultId);
+    const [author, setAuthor] = useState(usernameAuthor);
 
   const handleTextChange = val => {
     setText(val.value);
@@ -21,7 +22,7 @@ const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
     event.preventDefault();
     if (id == null || id == undefined){ //sin id = nueva nota
       api
-      .post("/notes/create", { "tasks": updatedText, "name": updatedTitle, "author": "debesponerusuario", "created" : new Date()})
+      .post("/notes/create", { "tasks": updatedText, "name": updatedTitle, "author": author, "created" : new Date()})
         .then((response) => {
           console.log("Successful create:", response);
         })
@@ -30,7 +31,7 @@ const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
         });
     } else {  //actualiza nota
       api
-      .post("/notes/update", { "tasks": updatedText, "name": updatedTitle, "id": id, "lastModified" : new Date()})
+      .post("/notes/update", { "tasks": updatedText, "name": updatedTitle, "author": author, "id": id})
       .then((response) => {
         console.log("Successful update:", response);
       })
@@ -43,14 +44,12 @@ const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
   const handleDelete = (event) => {
     //event.preventDefault();
     api
-    .post(`/notes/delete`, {"id" : id})
+    .post(`/notes/delete`, {"id" : id, "user" : author})
     .then((response) => {
       console.log("Successful delete:", response);
-      alert("BIEEEEN");
     })
     .catch((error) => {
       console.error("Error:", error);
-      alert("MAAAAAL " + api.getUri() + "/notes/delete/" + id);
     });
     fetch(api.getUri() + "/notes/delete/" + id, { method: 'DELETE' })
         .then(() =>  alert("BIEEEEN"));

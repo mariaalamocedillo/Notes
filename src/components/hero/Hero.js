@@ -8,14 +8,15 @@ const Hero = ({listNotes}) => {
     return(
         <div className="container">
             <div className="create-card">
-                <NoteForm defaultText={"Write it"} defaultTitle={"Name it"} className="editabletxt" />
+                <NoteForm defaultText={"Write it"} defaultTitle={"Name it"} usernameAuthor={"debesponerusuario"} className="editabletxt" />
+
             </div>
             <div className="cards-container">
                 {
                     listNotes.map((note) =>{
                         return(
-                                <div className="card" key={note.name}>
-                                    <NoteForm defaultText={note.tasks} defaultTitle={note.name} defaultId={note.id} className="editabletxt" />
+                                <div className="card" key={note.id}>
+                                    <NoteForm defaultText={note.tasks} defaultTitle={note.name} defaultId={note.id} usernameAuthor={note.author} className="editabletxt" />
                                     <span className="author">~{note.author}</span>
                                 </div>
                         )
