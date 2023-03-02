@@ -4,11 +4,11 @@ import api from '../../api/axiosConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
-const noteForm = ({ defaultText, defaultTitle, defaultId, usernameAuthor }) => {
+const noteForm = ({ defaultText, defaultTitle, defaultId, sendNote }) => {
     const [text, setText] = useState(defaultText);
     const [title, setTitle] = useState(defaultTitle);
     const [id, setId] = useState(defaultId);
-    const [author, setAuthor] = useState(usernameAuthor);
+    const [sendTo, setSendTo] = useState("");
 
   const handleTextChange = val => {
     setText(val.value);
@@ -21,19 +21,54 @@ const noteForm = ({ defaultText, defaultTitle, defaultId, usernameAuthor }) => {
   const handleSubmit = (event, updatedText, updatedTitle) => {
     event.preventDefault();
     if (id == null || id == undefined){ //sin id = nueva nota
-      api
-      .post("/notes/create", { "tasks": updatedText, "name": updatedTitle, "author": author, "created" : new Date()})
+      if(!sendNote) {
+        api
+        .post("/notes/create", { 
+                                  "content": updatedText, "title": updatedTitle, "created" : new Date()
+                                },
+                                {
+                                  headers: {
+                                    'Authorization': `Bearer ${window.sessionStorage.getItem('userToken')}` 
+                                  }
+                                })
         .then((response) => {
           console.log("Successful create:", response);
+          window.location.href = "/";
         })
         .catch((error) => {
           console.error("Error:", error);
         });
+      } else {
+        api
+        .post("/notes/send", { 
+                                  "content": updatedText, "title": updatedTitle, "created" : new Date(),
+                                  "sendTo": sendTo, "colour": colour
+                                },
+                                {
+                                  headers: {
+                                    'Authorization': `Bearer ${window.sessionStorage.getItem('userToken')}` 
+                                  }
+                                })
+          .then((response) => {
+            console.log("Successful create:", response);
+            window.location.href = "/";
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });      
+      }
     } else {  //actualiza nota
       api
-      .post("/notes/update", { "tasks": updatedText, "name": updatedTitle, "author": author, "id": id})
+      .post("/notes/update", { "content": updatedText, "title": updatedTitle, "id": id},
+                {
+                  headers: {
+                    'Authorization': `Bearer ${window.sessionStorage.getItem('userToken')}` 
+                  }
+                }
+            )
       .then((response) => {
         console.log("Successful update:", response);
+        window.location.href = "/";
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -44,15 +79,20 @@ const noteForm = ({ defaultText, defaultTitle, defaultId, usernameAuthor }) => {
   const handleDelete = (event) => {
     //event.preventDefault();
     api
-    .post(`/notes/delete`, {"id" : id, "user" : author})
+    .post(`/notes/delete`, {"id" : id},
+              {
+                headers: {
+                  'Authorization': `Bearer ${window.sessionStorage.getItem('userToken')}` 
+                }
+              }
+          )
     .then((response) => {
       console.log("Successful delete:", response);
+      window.location.href = "/";
     })
     .catch((error) => {
       console.error("Error:", error);
     });
-    fetch(api.getUri() + "/notes/delete/" + id, { method: 'DELETE' })
-        .then(() =>  alert("BIEEEEN"));
   };
   
 
@@ -71,6 +111,9 @@ const noteForm = ({ defaultText, defaultTitle, defaultId, usernameAuthor }) => {
           defaultValue={text}
           onSave={handleTextChange}
         />
+      </div>
+      <div>
+        
       </div>
       <button className="sendButton" type="submit">{id ? 'Guardar' : 'Crear'}</button>
     </form>

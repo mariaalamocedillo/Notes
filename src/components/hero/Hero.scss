@@ -7,14 +7,12 @@
     cursor: pointer          
   }
 
-  .create-card {
+  .new-note-box {
     text-align: left;
     display: inline-block;
-    width: 50%;
     margin: 10px;
     min-height: 48px;
     height: fit-content;
-    background: var(--yellow);
     border: 3px solid var(--black);
     border-radius: 16px;
     box-shadow: rgb(0, 0, 0) 8px 8px 0px 0px;
@@ -26,7 +24,19 @@
     .sendButton {
       background: var(--white);
     }    
+    
+    &.create-palette {
+      background: var(--yellow);
+      width: 35%;
+    }
+    
+    &.send-palette{
+      background: var(--lightBlue);
+      width: 35%;
+    }
   }
+
+
   .cards-container {
       padding: 50px 25px;
       display: flex;
@@ -52,7 +62,7 @@
             background: none;
             border: 0;
             color: inherit;
-            position: absolute;
+            //position: absolute;
           }
 
           h2 {

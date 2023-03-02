@@ -4,47 +4,35 @@ import api from '../../api/axiosConfig';
 import { Link } from 'react-router-dom'
 
 const Login = () => {
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [userToken, setUserToken] = useState("");
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     try {
       const response = await api.post("/auth/login", {
         username,
         password,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${window.sessionStorage.getItem('userToken')}` 
+        }
       }).then(response => {
-          setUserToken(response.data);
-          //document.cookie = `token=${response.data}; Path=/`;
-          window.sessionStorage.setItem('userToken', JSON.stringify(userToken));
-
+          console.log(response.data);
+          window.sessionStorage.setItem('userToken', response.data);
+          window.location.href = "/";
         });;
     } catch (error) {
       console.error(error);
     }
-    
-    try {
-      const response = await api.post("/auth/me", {
-        //...data
-      }, {
-        headers: {
-          'Authorization': `Bearer ${userToken}` 
-        }
-      })
-      .then(response => {
-        console.log(response.data);
-      })
-    } catch (error) {
-      console.error(error);
-    }
-
   };
 
 
   return (
     <div className="account-window">
-    <div className="c-browser-bar">
+    <div className="c-browser-bar login">
       <span className="c-browser-bar-dot"></span>
       <span className="c-browser-bar-dot"></span>
       <span className="c-browser-bar-dot"></span>

@@ -12,12 +12,18 @@
   --yellow: hsl(50, 100%, 75%);
   --black: hsl(261, 53%, 15%);
   --white: hsl(0, 0%, 100%);
+  --blue: hsl(189, 100%, 75%);
+  --salmon: hsl(355, 100%, 80%);
+  --orange: hsl(20, 100%, 66%);
+  --darkBlue: hsl(214, 100%, 44%);
   --lightBlue: hsl(189, 100%, 83%);
   --lightPink: hsl(340, 83%, 93%);
   --lightPinkBG: hsl(253deg 100% 94%);
   --lightPurpleBG: hsl(262deg 49% 81%);
   --darkPurple: hsl(260deg 72% 55%);
   --lightPurple: hsl(260deg 100% 67%);
+  
+  cursor: url("../src/static/img/cursor.svg") 16 16, pointer;
 }
 
 body {
@@ -28,7 +34,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-image: url("../src/static/img/bg-circuit-purple.svg");
-  cursor: url("../src/static/img/cursor.svg") 16 16, pointer;;
 }
 
 code {

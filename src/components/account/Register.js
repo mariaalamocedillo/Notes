@@ -21,8 +21,12 @@ const Register = () => {
         username,
         email,
         password,
-      });
-      console.log(response.data);
+      }).then(response => {
+        setUserToken(response.data);
+        window.sessionStorage.setItem('userToken', JSON.stringify(userToken));
+        window.location.href = "/";
+      });;
+      
       setError("");
       setUsername("");
       setEmail("");
