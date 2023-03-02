@@ -52,6 +52,7 @@
             background: none;
             border: 0;
             color: inherit;
+            position: absolute;
           }
 
           h2 {
@@ -112,4 +113,22 @@ button.sendButton {
       width: calc(50% - 45px) !important;
     }
   }
-
+._i5--j{
+  &:hover {
+    background-color: inherit;
+  }
+}
+input {
+  &._i5--j{
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    overflow: unset;
+    text-overflow: ellipsis; 
+    border: none;
+  &:focus {
+    outline: none;
+  }
+  }
+}

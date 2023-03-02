@@ -16,8 +16,9 @@ const Login = () => {
         password,
       }).then(response => {
           setUserToken(response.data);
-          document.cookie = `token=${response.data}; Path=/`;
+          //document.cookie = `token=${response.data}; Path=/`;
           window.sessionStorage.setItem('userToken', JSON.stringify(userToken));
+
         });;
     } catch (error) {
       console.error(error);
@@ -43,15 +44,15 @@ const Login = () => {
 
   return (
     <div className="account-window">
-    <div class="c-browser-bar">
-      <span class="c-browser-bar-dot"></span>
-      <span class="c-browser-bar-dot"></span>
-      <span class="c-browser-bar-dot"></span>
-      <span class="c-browser-bar-close"></span>
+    <div className="c-browser-bar">
+      <span className="c-browser-bar-dot"></span>
+      <span className="c-browser-bar-dot"></span>
+      <span className="c-browser-bar-dot"></span>
+      <span className="c-browser-bar-close"></span>
     </div>
-    <div class="c-browser-content ">
+    <div className="c-browser-content ">
       <form className='account-form' onSubmit={handleSubmit}>
-        <h3 class="c-subtitle">Login</h3>
+        <h3 className="c-subtitle">Login</h3>
 
         <div className="form-group">
           <span className='user-icon'></span>
