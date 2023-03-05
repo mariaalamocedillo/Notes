@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './account.scss';
 import api from '../../api/axiosConfig';
 import { Link } from 'react-router-dom'
@@ -10,31 +10,63 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
+
+  const checkSession = async () => {
+    try {
+      const response = api.post("/auth/check", {}, 
+      {
+          headers: {
+          'Authorization': `Bearer ${window.sessionStorage.getItem('userToken')}` 
+          }
+      })
+      .then(response => {
+          if(response.data == "autorizado"){
+              //console.log("Autorizado por el servidor");
+            window.location.href = "/";
+          } else {
+            window.sessionStorage.removeItem('userToken');
+          }
+      })
+    } catch (err) {
+        console.log(err);
+        setError(err);
+    }
+};    
+
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkValid = async () => {
+    if(username == '' || email == '' || password == '' || confirmPassword == ''){
+      setError("You must enter all fields");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError("The passwords don't match");
+      return false;
+    }
+    setError("");
+    return true;
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden");
-      return;
-    }
-    try {
-      const response = await api.post("/auth/register", {
-        username,
-        email,
-        password,
-      }).then(response => {
-        setUserToken(response.data);
-        window.sessionStorage.setItem('userToken', JSON.stringify(userToken));
-        window.location.href = "/";
+    if (checkValid()) {
+      try {
+        const response = await api.post("/auth/register", {
+          username,
+          email,
+          password,
+        }).then(response => {
+          window.sessionStorage.setItem('userToken', response.data);
+          window.location.href = "/";
       });;
-      
-      setError("");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-    } catch (error) {
-      console.log(error.response.data);
-      setError(error.response.data.message);
+        
+        setError(response.data);
+      } catch (error) {
+        setError(error.response.data);
+      }
     }
   };
 
@@ -57,7 +89,7 @@ const Register = () => {
           name="username"
           placeholder="username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {setUsername(e.target.value); checkValid();}}
         />
       </div>
       <div>
@@ -67,7 +99,7 @@ const Register = () => {
           name="email"
           placeholder="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {setEmail(e.target.value); checkValid();}}
         />
       </div>
       <div>
@@ -77,7 +109,7 @@ const Register = () => {
           name="password"
           placeholder="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {setPassword(e.target.value); checkValid();}}
         />
       </div>
       <div>
@@ -87,12 +119,12 @@ const Register = () => {
           name="confirm-password"
           placeholder="confirm password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={(e) => {setConfirmPassword(e.target.value); checkValid();}}
         />
       </div>
+      {error && <p className='mssg-error'>{error}</p>}
       <p className='mssg-no-account'>Already have an account? <Link to={"../login"}>Enter here</Link></p>
       <button type="submit">Create</button>
-      {error && <p>{error}</p>}
     </form>
     </div>
     </div>

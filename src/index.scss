@@ -8,20 +8,22 @@
 :root {
   --grayishBlue: hsl(228, 5%, 60%);
   --veryLightPink: hsl(300, 64%, 95%);
-
   --yellow: hsl(50, 100%, 75%);
   --black: hsl(261, 53%, 15%);
   --white: hsl(0, 0%, 100%);
   --blue: hsl(189, 100%, 75%);
   --salmon: hsl(355, 100%, 80%);
   --orange: hsl(20, 100%, 66%);
+  --green: hsl(157, 100%, 77%);
   --darkBlue: hsl(214, 100%, 44%);
-  --lightBlue: hsl(189, 100%, 83%);
-  --lightPink: hsl(340, 83%, 93%);
+  --lightBlue: hsl(189deg 98% 91%);
+  --lightPink: hsl(345, 100%, 94%);
   --lightPinkBG: hsl(253deg 100% 94%);
   --lightPurpleBG: hsl(262deg 49% 81%);
-  --darkPurple: hsl(260deg 72% 55%);
-  --lightPurple: hsl(260deg 100% 67%);
+  --darkPurple: hsl(260deg 61% 40%);
+  --lightPurple: hsl(262deg 100% 95%);
+  --lightGreen: hsl(158, 100%, 91%);
+  --darkGreen: hsl(157deg 72% 57%);
   
   cursor: url("../src/static/img/cursor.svg") 16 16, pointer;
 }

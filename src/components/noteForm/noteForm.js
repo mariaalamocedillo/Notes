@@ -4,14 +4,14 @@ import api from '../../api/axiosConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
-const noteForm = ({ defaultText, defaultTitle, defaultId, sendNote }) => {
+const noteForm = ({ defaultText, defaultTitle, defaultId }) => {
     const [text, setText] = useState(defaultText);
     const [title, setTitle] = useState(defaultTitle);
     const [id, setId] = useState(defaultId);
-    const [sendTo, setSendTo] = useState("");
 
   const handleTextChange = val => {
-    setText(val.value);
+    setText(val.target.value);
+    //val.target.form.requestSubmit();
   };
 
   const handleTitleChange = val => {
@@ -21,10 +21,9 @@ const noteForm = ({ defaultText, defaultTitle, defaultId, sendNote }) => {
   const handleSubmit = (event, updatedText, updatedTitle) => {
     event.preventDefault();
     if (id == null || id == undefined){ //sin id = nueva nota
-      if(!sendNote) {
         api
         .post("/notes/create", { 
-                                  "content": updatedText, "title": updatedTitle, "created" : new Date()
+                                  "content": updatedText, "title": updatedTitle
                                 },
                                 {
                                   headers: {
@@ -38,25 +37,6 @@ const noteForm = ({ defaultText, defaultTitle, defaultId, sendNote }) => {
         .catch((error) => {
           console.error("Error:", error);
         });
-      } else {
-        api
-        .post("/notes/send", { 
-                                  "content": updatedText, "title": updatedTitle, "created" : new Date(),
-                                  "sendTo": sendTo, "colour": colour
-                                },
-                                {
-                                  headers: {
-                                    'Authorization': `Bearer ${window.sessionStorage.getItem('userToken')}` 
-                                  }
-                                })
-          .then((response) => {
-            console.log("Successful create:", response);
-            window.location.href = "/";
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });      
-      }
     } else {  //actualiza nota
       api
       .post("/notes/update", { "content": updatedText, "title": updatedTitle, "id": id},
@@ -106,17 +86,12 @@ const noteForm = ({ defaultText, defaultTitle, defaultId, sendNote }) => {
         />
       </h2>
       <div className="noteContent">
-        <EditText
-          multiline={true}
-          defaultValue={text}
-          onSave={handleTextChange}
-        />
+        <textarea className="content-textarea" value={text} onChange={handleTextChange} rows={id ? 5 : 2} wrap={'soft'} cols={40} />
       </div>
       <div>
-        
+        <button className="sendButton" type="submit">{id ? 'Save' : 'Create'}</button>
       </div>
-      <button className="sendButton" type="submit">{id ? 'Guardar' : 'Crear'}</button>
-    </form>
+  </form>
   );
 }
 
