@@ -1,13 +1,15 @@
-import Hero from "../hero/Hero";
 import { useState, useEffect } from 'react';
 import api from '../../api/axiosConfig';
+import "./Home.scss";
 import NoteForm from "../noteForm/NoteForm";
 import SendNoteForm from "../noteForm/SendNoteForm";
 import FloatButton from "../floatButton/FloatButton";
 import { Container, Row, Col } from "react-bootstrap";
+import Hero from './Hero';
+
 
 const Home = () => {   
-    const [notes, setNotes] = useState([]);
+    const [listNotes, setListNotes] = useState([]);
     const [error, setError] = useState(null);
 
     const getNotes = async () => {
@@ -19,32 +21,38 @@ const Home = () => {
                     }
                 })
               .then(response => {
-                console.log(response.data);
-                setNotes(response.data);
+                setListNotes(response.data);
               })
         } catch (err) {
             console.log(err);
-            setError(err);
+            if (err.response && err.response.status === 401) {
+                // The user is not logged in; must delete the token
+                window.sessionStorage.removeItem('userToken');
+                window.location.href = "/login";
+              } else {
+                // Some other error occurred
+                setError('An error occurred while processing your request. Please try again later.');
+              }
         }
     };    
   
     useEffect(() => {
         getNotes();
       }, []);
-    
+
+
     return(
         <>
             <Container className="container">
                 <Row>
                     <Col className="new-note-box create-palette">
-                        <NoteForm defaultText={"Write it..."} defaultTitle={"Name it..."} className="editabletxt" />
+                        <NoteForm onFetch={getNotes} defaultText={"Write it..."} defaultTitle={"Name it..."} className="editabletxt" />
                     </Col>
                     <Col className="new-note-box send-palette">
-                        <SendNoteForm defaultText={"Write it..."} defaultTitle={"Send it..."} className="editabletxt" />
+                        <SendNoteForm  onFetch={getNotes} defaultText={"Write it..."} defaultTitle={"Send it..."} className="editabletxt" />
                     </Col>
                 </Row>
-
-                <Hero listNotes = {notes}/>
+            <Hero listNotes={listNotes} onFetch={getNotes}/>
                 
             </Container>
             <FloatButton />

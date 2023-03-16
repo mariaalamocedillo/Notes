@@ -54,12 +54,14 @@ const sendNoteForm = ({ defaultText, defaultTitle, defaultId }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
+    console.log(selectedColor);
       api.post('/notes/create', { content: text, title: title, sendTo: selectedUser, colour: selectedColor }, {
         headers: {
           Authorization: `Bearer ${window.sessionStorage.getItem('userToken')}`
         }
       }).then(() => {
-        window.location.href = '/';
+        //window.location.href = '/';
+        alert("The note was sent!")
       }).catch(error => {
         console.error('Error:', error);
       });
