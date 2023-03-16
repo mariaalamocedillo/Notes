@@ -1,46 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { EditText } from 'react-edit-text';
 import api from '../../api/axiosConfig';
 import { Row, Col } from 'react-bootstrap';
-import Select from 'react-select';
+import SendingInfo from './SendingInfo';
 
-const sendNoteForm = ({ defaultText, defaultTitle, defaultId }) => {
+const sendNoteForm = ({ defaultText, defaultTitle }) => {
   const [text, setText] = useState(defaultText);
   const [title, setTitle] = useState(defaultTitle);
-  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
-  
-  const colors = [
-    { value: 'pink-note-palette', label: 'Pink' },
-    { value: 'green-note-palette', label: 'Green' },
-    { value: 'blue-note-palette', label: 'Blue' },
-    { value: 'purple-note-palette', label: 'Purple' }
-  ];
 
-  const getUsers = async () => {
-    try {
-      const response = await api.post('/auth/getAllUsers', {}, {
-        headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem('userToken')}`,
-        },
-      });
-      setUsers(response.data);
-    } catch (err) {
-      console.log("Can't access to the list of users");
-      console.log(err);
-    }
-  };
 
-  useEffect(() => {
-    getUsers();
-  }, []);
-
-  const handleUserChange = (selectedOption) => {
-    setSelectedUser(selectedOption.value);
+  const handleUserChange = (selectedUser) => {
+    setSelectedUser(selectedUser);
+    console.log(selectedUser);
   };
 
   const handleColorChange = (selectedOption) => {
+    console.log(selectedOption.value);
     setSelectedColor(selectedOption.value);
   };
 
@@ -54,8 +31,10 @@ const sendNoteForm = ({ defaultText, defaultTitle, defaultId }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log(selectedColor);
-      api.post('/notes/create', { content: text, title: title, sendTo: selectedUser, colour: selectedColor }, {
+    if(selectedUser == undefined) {
+      setSelectedUser();
+    }
+      api.post('/notes/create', { content: text, title: title, sendTo: selectedUser.value, colour: selectedColor }, {
         headers: {
           Authorization: `Bearer ${window.sessionStorage.getItem('userToken')}`
         }
@@ -77,19 +56,13 @@ const sendNoteForm = ({ defaultText, defaultTitle, defaultId }) => {
           <textarea className="content-textarea" value={text} onChange={handleTextChange} rows={2} wrap={'soft'} cols={50}/>
         </div>
       </Row>
-
       <Row className="selects-row">
-          <Col className="select-color">
-            <Select options={colors} placeholder="Color" onChange={handleColorChange} />
-          </Col>
-          <Col className="select-user">
-            <Select options={users} placeholder="Send to" onChange={handleUserChange} />
-          </Col>
-          <Col className="button">
-          </Col>
-            <button className="sendButton send-note-btn" type="submit">
-              Send
-            </button>
+        <SendingInfo handleUserChange={handleUserChange} handleColorChange={handleColorChange}/>
+        <Col className="button">
+          <button className="sendButton" type="submit">
+            Send
+          </button>
+        </Col>
       </Row>
     </form>
   );

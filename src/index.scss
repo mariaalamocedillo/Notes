@@ -25,7 +25,7 @@
   --lightGreen: hsl(158, 100%, 91%);
   --darkGreen: hsl(157deg 72% 57%);
   
-  cursor: url("../src/static/img/cursor.svg") 16 16, pointer;
+  cursor: url("../src/static/img/cursor-mc.svg") 8 8, default;
 }
 
 body {
@@ -43,3 +43,6 @@ code {
     monospace;
 }
 
+a {
+  cursor: url("../src/static/img/pointer-jk.svg") 8 8, pointer;
+}

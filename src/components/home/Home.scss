@@ -3,8 +3,28 @@
   padding-top: 100px;
   padding-bottom: 50px;
   
+  .initial-options {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    
+    .options-sending {
+      background-color: #e7dfff;
+      border: 3px solid var(--black);
+      float: right;
+      border-radius: 22px;
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 32px;
+      margin-top: 32px;
+      display: grid;
+      padding: 1em 1em;
+      height: fit-content;
+    }
+  }
+
   button {
-    cursor: pointer          
+    cursor: url("../../static/img/pointer-jk.svg") 8 8, pointer;
   }
 
   .new-note-box {
@@ -57,6 +77,7 @@
           box-shadow: 10px 10px 0 -2.5px var(--shadowColor), 10px 10px 0 0 var(--shadowColor);
           text-align: left;
           --shadowColor: var(--lightPink);
+          position: relative;
 
           &.pink-note-palette {
             background: var(--lightPink);
@@ -98,15 +119,20 @@
               font-size: 12px;
               float: right;
               margin: 3px;
-              cursor: default;
+              cursor: url("../../static/img/cursor-mc.svg") 8 8, default;
           }
           ._4GdcU{
-            cursor: text;
+            cursor: url("../../static/img/textcursor.svg") 8 8, text;
+          }
+
+          .end-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
           }
       }
   }
 }
-          
 div .noteContent {
     width: 65%;
     float: left;
@@ -171,11 +197,12 @@ input {
     }
   }
 }
-
+.content-textarea, .editable-title{
+  cursor: url("../../static/img/textcursor.svg") 8 8, text;
+}
 .content-textarea {
   background-color: transparent;
   border: none;
-  font-family: 'Courier New', Courier, monospace;
   &:focus {
     outline: none;
     border: transparent;
@@ -215,12 +242,14 @@ input {
     }
   }
 
+  .css-13cymwt-control, .css-t3ipsp-control, .css-1nmdiq5-menu {
+    cursor: url("../../static/img/pointer-jk.svg") 8 8, pointer !important;
+  }
 
   .css-13cymwt-control{
     background-color: transparent !important;
     border-color: transparent !important;
     font-family: 'Courier New', Courier, monospace !important;
-
   }
     .css-1xc3v61-indicatorContainer{
       color: var(--black) !important;
@@ -238,4 +267,87 @@ input {
       border: 3px solid var(--black) !important;
       color: black !important;
       font-size: large;
+      &.first-tooltip-btn{
+        cursor: url("../../static/img/cursor-mc.svg") 8 8, default;
+      }      
     }
+
+/* TOGGLE SEND */
+
+.switch {
+  /* Variables */
+ --switch_width: 2em;
+ --switch_height: 1em;
+ --thumb_color: #e8e8e8;
+ --track_color: #e8e8e8;
+ --track_active_color: #888;
+ --outline_color: #000;
+ font-size: 17px;
+ position: relative;
+ display: inline-block;
+ width: var(--switch_width);
+ height: var(--switch_height);
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+ opacity: 0;
+ width: 0;
+ height: 0;
+}
+
+/* The slider */
+.slider {
+ box-sizing: border-box;
+ border: 2px solid var(--outline_color);
+ position: absolute;
+ cursor: url("../../static/img/pointer-jk.svg") 8 8, pointer;
+ top: 0;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ background-color: var(--track_color);
+ transition: .15s;
+ border-radius: var(--switch_height);
+}
+
+.slider:before {
+ box-sizing: border-box;
+ position: absolute;
+ content: "";
+ height: var(--switch_height);
+ width: var(--switch_height);
+ border: 2px solid var(--outline_color);
+ border-radius: 100%;
+ left: -2px;
+ bottom: -2px;
+ background-color: var(--thumb_color);
+ transform: translateY(-0.2em);
+ box-shadow: 0 0.2em 0 var(--outline_color);
+ transition: .15s;
+}
+
+input:checked + .slider {
+ background-color: var(--track_active_color);
+}
+
+input:focus-visible + .slider {
+ box-shadow: 0 0 0 2px var(--track_active_color);
+}
+
+/* Raise thumb when hovered */
+input:hover + .slider:before {
+ transform: translateY(-0.3em);
+ box-shadow: 0 0.3em 0 var(--outline_color);
+}
+
+input:checked + .slider:before {
+ transform: translateX(calc(var(--switch_width) - var(--switch_height))) translateY(-0.2em);
+}
+
+/* Raise thumb when hovered & checked */
+input:hover:checked + .slider:before {
+ transform: translateX(calc(var(--switch_width) - var(--switch_height))) translateY(-0.3em);
+ box-shadow: 0 0.3em 0 var(--outline_color);
+}
+

@@ -25,10 +25,6 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
     setText(event.target.value);
   };
 
-  const handleTitleChange = (title) => {
-    console.log(title);
-    setTitle(title);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -45,15 +41,7 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
         onFetch();
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response && error.response.status === 401) {
-          // The user is not logged in; must delete the token
-          window.sessionStorage.removeItem('userToken');
-          window.location.href = '/login';
-        } else {
-          // Some other error occurred
-          setError('An error occurred while processing your request. Please try again later.');
-        }
+        handleError(error);
       });
   };
 
@@ -69,17 +57,21 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
         onFetch();
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response && error.response.status === 401) {
-          // The user is not logged in; must delete the token
-          window.sessionStorage.removeItem('userToken');
-          window.location.href = '/login';
-        } else {
-          // Some other error occurred
-          setError('An error occurred while processing your request. Please try again later.');
-        }
+        handleError(error);
       });
   };
+
+  const handleError = (error) => {
+    console.log(error);
+    if (error.response && error.response.status === 401) {
+      // The user is not logged in; must delete the token
+      window.sessionStorage.removeItem('userToken');
+      window.location.href = '/login';
+    } else {
+      // Some other error occurred
+      setError('An error occurred while processing your request. Please try again later.');
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -88,7 +80,7 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
           <FontAwesomeIcon className="deleteIcon" icon={faTrashCan} />
         </button>
       )}
-      <h2>
+      <h2 className="editable-title">
           <ContentEditable
             onChange={onContentChange}
             onBlur={onContentChange}
@@ -108,11 +100,14 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
             />
            : text}
       </div>
-      <div>
+
+      { editable && 
+      <div className="end-btn">
         <button className="sendButton" type="submit">
           {id ? 'Save' : 'Create'}
         </button>
       </div>
+      }
     </form>
   );
 };

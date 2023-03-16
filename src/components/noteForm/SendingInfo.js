@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import 'react-edit-text/dist/index.css';
-import {Container, Row, Col} from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import Select from 'react-select';
 import api from '../../api/axiosConfig';
 
-const SendingInfo = () => {
+const SendingInfo = ({handleColorChange, handleUserChange}) => {
     const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [selectedColor, setSelectedColor] = useState(null);
-  
-    const colors = [
-      { value: 'red', label: 'Red' },
-      { value: 'green', label: 'Green' },
-      { value: 'blue', label: 'Blue' },
-    ];
+
+    const [colors, setColors] = useState([
+      { value: 'pink-note-palette', label: 'Pink' },
+      { value: 'green-note-palette', label: 'Green' },
+      { value: 'blue-note-palette', label: 'Blue' },
+      { value: 'purple-note-palette', label: 'Purple' }
+    ]);
   
     const getUsers = async () => {
       try {
@@ -22,6 +21,7 @@ const SendingInfo = () => {
             Authorization: `Bearer ${window.sessionStorage.getItem('userToken')}`,
           },
         });
+        response.data.push({ value: response.data[Math.floor(Math.random() * response.data.length)].value, label: 'Random user' })
         setUsers(response.data);
       } catch (err) {
         console.log(err);
@@ -30,45 +30,21 @@ const SendingInfo = () => {
   
     useEffect(() => {
       getUsers();
-    }, []);
-  
-    const handleUserChange = (selectedOption) => {
-      setSelectedUser(selectedOption);
-    };
-  
-    const handleColorChange = (selectedOption) => {
-      setSelectedColor(selectedOption);
-    };
-  
-    const handleSendNote = () => {
-      if (selectedUser && selectedColor) {
-        NoteForm.sendNote({
-          user: selectedUser,
-          color: selectedColor,
-        });
+      if(colors.find(color => color.label === 'Random color') == undefined) {
+        colors.push({ value: colors[Math.floor(Math.random() * colors.length)].value, label: 'Random color' });
       }
-    };
-  
-    const getData = () => {
-        console.log("EN el getData");
-        return "selectedColor";
-    };
+      handleUserChange(users[users.length - 1]);
+      handleColorChange(colors[colors.length - 1]);
+    }, []);
     
     return(
         <>
-        <Row className="selects-row">
           <Col className="select-color">
-            <Select options={colors} placeholder="Choose color" onChange={handleColorChange} />
+            <Select options={colors} placeholder="Random color" onChange={handleColorChange} />
           </Col>
           <Col className="select-user">
-            <Select options={users} placeholder="Choose user to send it to" onChange={handleUserChange} />
+            <Select options={users} placeholder="Random user" onChange={handleUserChange} />
           </Col>
-          <Col className="button">
-            <button className="sendButton" type="submit" onClick={handleSendNote}>
-              Send
-            </button>
-          </Col>
-        </Row>
       </>
     )
 }

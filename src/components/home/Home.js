@@ -10,6 +10,7 @@ import Hero from './Hero';
 
 const Home = () => {   
     const [listNotes, setListNotes] = useState([]);
+    const [sendingNote, setSendingNote] = useState(false);
     const [error, setError] = useState(null);
 
     const getNotes = async () => {
@@ -44,13 +45,28 @@ const Home = () => {
     return(
         <>
             <Container className="container">
-                <Row>
-                    <Col className="new-note-box create-palette">
-                        <NoteForm onFetch={getNotes} defaultText={"Write it..."} defaultTitle={"Name it..."} className="editabletxt" />
-                    </Col>
-                    <Col className="new-note-box send-palette">
-                        <SendNoteForm  onFetch={getNotes} defaultText={"Write it..."} defaultTitle={"Send it..."} className="editabletxt" />
-                    </Col>
+                <Row className='initial-options'>   
+                    <Col className={sendingNote ? "new-note-box send-palette" : "new-note-box create-palette"}>
+                    { sendingNote ?
+                        <SendNoteForm  onFetch={getNotes} 
+                            defaultText={"Write it..."} 
+                            defaultTitle={"Send it..."} 
+                            className="editabletxt" />
+                        :
+                        <NoteForm editable={true} 
+                            onFetch={getNotes} 
+                            defaultText={"Write it..."} 
+                            defaultTitle={"Name it..."} 
+                            className="editabletxt" />
+                    }
+                    </Col>  
+                        <div className='options-sending'>
+                            { sendingNote ? 'Create' : 'Send'}
+                            <label className="switch">
+                                <input type="checkbox" onChange={() => setSendingNote(!sendingNote)}/>
+                                <span className="slider"></span>
+                            </label>
+                        </div>
                 </Row>
             <Hero listNotes={listNotes} onFetch={getNotes}/>
                 

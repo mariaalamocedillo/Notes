@@ -19,7 +19,7 @@ const FloatButton = () => {
                 tooltip="Hi!"
                 icon="fa-solid fa-right-from-bracket"
                 rotate={true}
-                className="tooltip-color"
+                className="tooltip-color first-tooltip-btn"
                 ><FontAwesomeIcon icon={faPlus} /></Button>
         </Container>
     )
