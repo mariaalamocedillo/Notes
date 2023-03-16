@@ -118,7 +118,7 @@
               color: var(--grayishBlue);
               font-size: 12px;
               float: right;
-              margin: 3px;
+              margin-right: 10px;
               cursor: url("../../static/img/cursor-mc.svg") 8 8, default;
           }
           ._4GdcU{
@@ -144,6 +144,10 @@ div .noteContent {
   display: inline-flex;
   margin-left: 15px;
 
+  &.pos-abs {
+    position: absolute;
+    width: auto;
+  }
   .select-color{
     width: fit-content;
     margin-right: 10px;

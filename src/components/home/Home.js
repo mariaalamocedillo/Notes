@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axiosConfig';
 import "./Home.scss";
 import NoteForm from "../noteForm/NoteForm";
-import SendNoteForm from "../noteForm/SendNoteForm";
 import FloatButton from "../floatButton/FloatButton";
 import { Container, Row, Col } from "react-bootstrap";
 import Hero from './Hero';
@@ -47,18 +46,14 @@ const Home = () => {
             <Container className="container">
                 <Row className='initial-options'>   
                     <Col className={sendingNote ? "new-note-box send-palette" : "new-note-box create-palette"}>
-                    { sendingNote ?
-                        <SendNoteForm  onFetch={getNotes} 
-                            defaultText={"Write it..."} 
-                            defaultTitle={"Send it..."} 
-                            className="editabletxt" />
-                        :
-                        <NoteForm editable={true} 
+                        <NoteForm 
+                            sendNote={sendingNote}
+                            editable={true} 
                             onFetch={getNotes} 
                             defaultText={"Write it..."} 
                             defaultTitle={"Name it..."} 
                             className="editabletxt" />
-                    }
+                    
                     </Col>  
                         <div className='options-sending'>
                             { sendingNote ? 'Create' : 'Send'}

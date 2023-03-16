@@ -2,14 +2,18 @@ import { useState, useCallback } from "react";
 import api from '../../api/axiosConfig';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { Row, Col } from 'react-bootstrap';
 import sanitizeHtml from "sanitize-html"
 import ContentEditable from 'react-contenteditable';
+import SendingInfo from './SendingInfo';
 
-const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = null, onFetch }) => {
+const NoteForm = ({ sendNote, editable, defaultText = '', defaultTitle = '', defaultId = null, onFetch }) => {
   const [text, setText] = useState(defaultText);
   const [title, setTitle] = useState(defaultTitle);
   const [id, setId] = useState(defaultId);
   const [error, setError] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
 
 	const onContentChange = useCallback(evt => {
 		const sanitizeConf = {
@@ -26,10 +30,24 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
   };
 
 
+  const handleUserChange = (selectedUser) => {
+    setSelectedUser(selectedUser);
+    console.log(selectedUser);
+  };
+
+  const handleColorChange = (selectedOption) => {
+    console.log(selectedOption.value);
+    setSelectedColor(selectedOption.value);
+  };
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const endpoint = id ? '/notes/update' : '/notes/create';
-    const data = { content: text.trim(), title: title.trim(), id };
+    const data = sendNote ? { content: text.trim(), title: title.trim(), 
+              sendTo: selectedUser.value, colour: selectedColor }
+            : { content: text.trim(), title: title.trim(), id };
+    console.log(data);
     const options = {
       headers: {
         Authorization: `Bearer ${window.sessionStorage.getItem('userToken')}`,
@@ -38,6 +56,7 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
     api.post(endpoint, data, options)
       .then((response) => {
         console.log('Successful create/update:', response);
+        sendNote && alert('The note was successfully sent!');
         onFetch();
       })
       .catch((error) => {
@@ -75,39 +94,54 @@ const NoteForm = ({ editable, defaultText = '', defaultTitle = '', defaultId = n
 
   return (
     <form onSubmit={handleSubmit}>
-      {id && (
-        <button className="deleteButton" onClick={handleDelete}>
-          <FontAwesomeIcon className="deleteIcon" icon={faTrashCan} />
-        </button>
-      )}
-      <h2 className="editable-title">
-          <ContentEditable
-            onChange={onContentChange}
-            onBlur={onContentChange}
-            disabled={!editable}
-            html={title}/>
-      </h2>
+      <Row className="inputs-txt">
+        {id && (
+          <button className="deleteButton" onClick={handleDelete}>
+            <FontAwesomeIcon className="deleteIcon" icon={faTrashCan} />
+          </button>
+        )}
+        <h2 className="editable-title">
+            <ContentEditable
+              onChange={onContentChange}
+              onBlur={onContentChange}
+              disabled={!editable}
+              html={title}/>
+        </h2>
 
-      <div className="noteContent">        
-        { editable ? 
-            <textarea
-            className="content-textarea"
-            value={text}
-            onChange={handleTextChange}
-            rows={id ? 5 : 2}
-            wrap="soft"
-            cols={40}
-            />
-           : text}
-      </div>
+        <div className="noteContent">        
+          { editable ? 
+              <textarea
+              className="content-textarea"
+              value={text}
+              onChange={handleTextChange}
+              rows={id ? 5 : 2}
+              wrap="soft"
+              cols={40}
+              />
+            : text}
+        </div>
+      </Row>
+      <Row className={(editable && !sendNote && !id) ? "selects-row pos-abs" : "selects-row"}>
 
-      { editable && 
+      { sendNote &&
+        <>
+          <SendingInfo handleUserChange={handleUserChange} handleColorChange={handleColorChange}/>
+          <div className="end-btn">
+            <button className="sendButton" type="submit">
+              Send
+            </button>
+          </div>
+        </>
+      }
+      { (editable && !sendNote) && 
       <div className="end-btn">
         <button className="sendButton" type="submit">
           {id ? 'Save' : 'Create'}
         </button>
       </div>
       }
+      </Row>
+
     </form>
   );
 };
